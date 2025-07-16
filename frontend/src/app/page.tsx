@@ -89,7 +89,7 @@ export default function Home() {
     params.append("limit", "5");
 
     try {
-      const res = await fetch(`http://localhost:5000/api/v1/todos?${params.toString()}`);
+      const res = await fetch(`https://todobackend-upk1.onrender.com/api/v1/todos?${params.toString()}`);
       const data = await res.json();
       setTodos(data.data);
       setPagination(data.pagination);
@@ -112,7 +112,7 @@ export default function Home() {
   const handleCreate = async (values: z.infer<typeof formSchema>) => {
     console.log("Creating TODO with values:", values);
     try {
-      await fetch("http://localhost:5000/api/v1/todos", {
+      await fetch("https://todobackend-upk1.onrender.com/api/v1/todos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
@@ -127,7 +127,7 @@ export default function Home() {
   const handleUpdate = async (values: z.infer<typeof formSchema>) => {
     if (!selectedTodo) return;
     try {
-      await fetch(`http://localhost:5000/api/v1/todos/${selectedTodo._id}`, {
+      await fetch(`https://todobackend-upk1.onrender.com/api/v1/todos/${selectedTodo._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
@@ -142,7 +142,7 @@ export default function Home() {
 
   const handleMarkAsCompleted = async (id: string) => {
     try {
-      await fetch(`http://localhost:5000/api/v1/todos/${id}`, {
+      await fetch(`https://todobackend-upk1.onrender.com/api/v1/todos/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "Completed" }),
@@ -155,7 +155,7 @@ export default function Home() {
 
   const handleDelete = async (id: string) => {
     try {
-      await fetch(`http://localhost:5000/api/v1/todos/${id}`, {
+      await fetch(`https://todobackend-upk1.onrender.com/api/v1/todos/${id}`, {
         method: "DELETE",
       });
       await fetchTodos();
@@ -166,7 +166,7 @@ export default function Home() {
 
   const handleMarkAsIncomplete = async (id: string) => {
     try {
-      await fetch(`http://localhost:5000/api/v1/todos/${id}`, {
+      await fetch(`https://todobackend-upk1.onrender.com/api/v1/todos/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "Not Started" }), // Or "Pending", depending on desired incomplete state
@@ -188,7 +188,7 @@ export default function Home() {
   const handleBulkDelete = async () => {
     try {
       await Promise.all(selectedTodoIds.map((id) =>
-        fetch(`http://localhost:5000/api/v1/todos/${id}`, {
+        fetch(`https://todobackend-upk1.onrender.com/api/v1/todos/${id}`, {
           method: "DELETE",
         })
       ));
