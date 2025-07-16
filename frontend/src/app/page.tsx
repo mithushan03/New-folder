@@ -46,6 +46,7 @@ const formSchema = z.object({
   category: z.string(),
   status: z.string(),
 });
+type FormSchemaType = z.infer<typeof formSchema>;
 
 interface Todo {
   _id: string;
