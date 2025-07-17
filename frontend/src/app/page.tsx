@@ -36,17 +36,9 @@ import {
 import { CalendarIcon, Pencil, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { TodoForm } from "@/components/TodoForm";
+import { TodoForm, formSchema, FormSchemaType } from "@/components/TodoForm";
 import * as z from "zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-const formSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  description: z.string().min(1, "Description is required"),
-  category: z.string(),
-  status: z.string(),
-});
-type FormSchemaType = z.infer<typeof formSchema>;
 
 interface Todo {
   _id: string;
@@ -58,6 +50,20 @@ interface Todo {
   modifiedAt: string;
 }
 
+interface Pagination {
+  total: number;
+  page: number;
+  limit: number;
+  next?: {
+    page: number;
+    limit: number;
+  };
+  prev?: {
+    page: number;
+    limit: number;
+  };
+}
+
 export default function Home() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [search, setSearch] = useState("");
@@ -65,7 +71,7 @@ export default function Home() {
   const [status, setStatus] = useState<string[]>([]);
   const [date, setDate] = useState<DateRange | undefined>();
   const [page, setPage] = useState(1);
-  const [pagination, setPagination] = useState<any>({});
+  const [pagination, setPagination] = useState<Pagination>({ total: 0, page: 1, limit: 5 });
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
@@ -101,14 +107,14 @@ export default function Home() {
 
   useEffect(() => {
     fetchTodos();
-  }, [search, category, status, date, page]);
+  }, [search, category, status, date, page, fetchTodos]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSloganIndex((prevIndex) => (prevIndex + 1) % slogans.length);
     }, 5000); // Change slogan every 5 seconds
     return () => clearInterval(interval);
-  }, []);
+  }, [slogans.length]);
 
   const handleCreate = async (values: z.infer<typeof formSchema>) => {
     console.log("Creating TODO with values:", values);

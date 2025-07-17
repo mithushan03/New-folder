@@ -21,17 +21,27 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const formSchema = z.object({
+export const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   category: z.string(),
   status: z.string(),
 });
-type FormSchemaType = z.infer<typeof formSchema>;
+export type FormSchemaType = z.infer<typeof formSchema>;
+
+interface Todo {
+  _id: string;
+  title: string;
+  description: string;
+  category: string;
+  status: string;
+  createdAt: string;
+  modifiedAt: string;
+}
 
 interface TodoFormProps {
-  onSubmit: (values: z.infer<typeof formSchema>) => void;
-  initialData?: any;
+  onSubmit: (values: FormSchemaType) => void;
+  initialData?: Todo;
 }
 
 export function TodoForm({ onSubmit, initialData }: TodoFormProps) {
