@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Table,
   TableBody,
@@ -36,7 +36,7 @@ import {
 import { CalendarIcon, Pencil, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { TodoForm, formSchema, FormSchemaType } from "@/components/TodoForm";
+import { TodoForm, formSchema } from "@/components/TodoForm";
 import * as z from "zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -85,7 +85,7 @@ export default function Home() {
   ];
   const [currentSloganIndex, setCurrentSloganIndex] = useState(0);
 
-  const fetchTodos = async () => {
+  const fetchTodos = useCallback(async () => {
     const params = new URLSearchParams();
     if (search) params.append("search", search);
     if (category) params.append("category", category);
@@ -103,7 +103,7 @@ export default function Home() {
     } catch (error) {
       console.error("Error fetching todos:", error);
     }
-  };
+  }, [search, category, status, date, page]);
 
   useEffect(() => {
     fetchTodos();
@@ -392,7 +392,7 @@ export default function Home() {
                           <DialogHeader>
                             <DialogTitle className="text-2xl font-bold text-gray-800">Edit TODO</DialogTitle>
                           </DialogHeader>
-                          <TodoForm onSubmit={handleUpdate} initialData={selectedTodo} />
+                          <TodoForm onSubmit={handleUpdate} initialData={selectedTodo || undefined} />
                         </DialogContent>
                       </Dialog>
                       <Button variant="outline" size="icon" onClick={() => handleDelete(todo._id)} className="text-red-600 hover:text-red-800 border-red-600 hover:border-red-800 rounded-full p-2 shadow-sm hover:shadow-md transition-all duration-200">
@@ -417,7 +417,7 @@ export default function Home() {
             <div className="flex justify-between items-center mt-6 p-4 bg-gray-50 rounded-lg shadow-inner">
               <Button
                 disabled={!pagination.prev}
-                onClick={() => setPage(pagination.prev.page)}
+                onClick={() => pagination.prev && setPage(pagination.prev.page)}
                 className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md shadow-sm transition-all duration-200"
               >
                 Previous
@@ -434,7 +434,7 @@ export default function Home() {
               </span>
               <Button
                 disabled={!pagination.next}
-                onClick={() => setPage(pagination.next.page)}
+                onClick={() => pagination.next && setPage(pagination.next.page)}
                 className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md shadow-sm transition-all duration-200"
               >
                 Next
